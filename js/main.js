@@ -68,8 +68,6 @@ window.CBP_READY = (async () => {
   const siteRoot=new URL('../',document.querySelector('script[src$="main.js"]').src);
   const types=window.CBP_GIFT_TYPES.filter(t=>t.enabled&&catalog.some(p=>p.collection===t.id));
   const giftLink=t=>new URL('collections/all.html?giftType='+encodeURIComponent(t.id),siteRoot).href;
-  $$('[data-gift-type-menu]').forEach(menu=>{menu.innerHTML=`<a href="${new URL('collections/all.html',siteRoot).href}">All Gifts</a>`+types.map(t=>`<a href="${giftLink(t)}">${esc(t.name)}</a>`).join('');});
-  $$('[data-gift-type-mobile]').forEach(item=>{item.innerHTML=types.map(t=>`<a href="${giftLink(t)}" data-close-drawer>${esc(t.name)}</a>`).join('');});
   $$('[data-gift-type-cards]').forEach(grid=>{grid.innerHTML=types.map(t=>{const first=catalog.find(p=>p.collection===t.id);return `<li><a class="col-card" href="${giftLink(t)}" style="--accent:#E7DCCB"><span class="col-card__media"><img src="${esc(t.image||first.image)}" alt="${esc(t.imageAlt||first.alt||t.name)}" width="600" height="450" loading="lazy"></span><span class="col-card__label">${esc(t.name)} <span class="circle" aria-hidden="true">→</span></span></a></li>`;}).join('');});
   const byId = Object.fromEntries([...catalog, ...products].map(p => [p.id, p]));
   const inr = n => '₹' + n.toLocaleString('en-IN');
