@@ -1,10 +1,57 @@
 window.CBP_READY = (async () => {
-  await window.CBP_CATALOG_READY;
-  'use strict';
-
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  /* ---------- Drawers (menu + cart) ----------
+     Bound BEFORE the catalogue fetch below so the hamburger / cart buttons work
+     immediately on load. The live catalogue request can take several seconds on
+     mobile networks (up to its 12s timeout); the menu must never wait for it. */
+  let lastFocus = null;
+  function openDrawer(el, trigger) {
+    if (!el) return;
+    lastFocus = trigger || document.activeElement;
+    el.hidden = false;
+    document.body.classList.add('lock');
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-open')));
+    $$('[aria-controls="' + el.id + '"]').forEach(b => b.setAttribute('aria-expanded', 'true'));
+    const focusable = $('button, a', $('.drawer__panel', el));
+    focusable && focusable.focus();
+  }
+  function closeDrawer(el) {
+    if (!el || el.hidden) return;
+    el.classList.remove('is-open');
+    $$('[aria-controls="' + el.id + '"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    const done = () => { el.hidden = true; document.body.classList.remove('lock'); };
+    matchMedia('(prefers-reduced-motion: reduce)').matches ? done() : setTimeout(done, 300);
+    lastFocus && lastFocus.focus && lastFocus.focus();
+  }
+  function trapFocus(el, e) {
+    if (!el || e.key !== 'Tab' || el.hidden) return;
+    const f = $$('a[href], button:not([disabled]), input', $('.drawer__panel', el)).filter(n => n.offsetParent);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
+  const menuDrawer = $('[data-drawer]');
+  const cartDrawer = $('[data-cart]');
+  // Event delegation: links injected into the drawer later (gift types) also close it.
+  document.addEventListener('click', e => {
+    const t = e.target;
+    if (t.closest('[data-open-drawer]')) openDrawer(menuDrawer, t.closest('[data-open-drawer]'));
+    else if (t.closest('[data-close-drawer]')) closeDrawer(menuDrawer);
+    else if (t.closest('[data-open-cart]')) openDrawer(cartDrawer, t.closest('[data-open-cart]'));
+    else if (t.closest('[data-close-cart]')) closeDrawer(cartDrawer);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeDrawer(menuDrawer); closeDrawer(cartDrawer); }
+    trapFocus(menuDrawer, e); trapFocus(cartDrawer, e);
+  });
+
+  // Live catalogue (slow network / offline safe): if it fails, fall back to the bundled catalogue.
+  try { await window.CBP_CATALOG_READY; } catch (err) { console.error('Catalogue unavailable, using bundled products', err); }
   const products = window.CBP_PRODUCTS || [];          // homepage favourites
   const catalog = window.CBP_CATALOG || [];             // full catalogue (shared across pages)
   const siteRoot=new URL('../',document.querySelector('script[src$="main.js"]').src);
@@ -123,43 +170,8 @@ window.CBP_READY = (async () => {
     toast(on ? 'Saved to your wishlist' : 'Removed from wishlist');
   });
 
-  /* ---------- Drawers (menu + cart) ---------- */
-  let lastFocus = null;
-  function openDrawer(el, trigger) {
-    lastFocus = trigger || document.activeElement;
-    el.hidden = false;
-    document.body.classList.add('lock');
-    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-open')));
-    $$('[aria-controls="' + el.id + '"]').forEach(b => b.setAttribute('aria-expanded', 'true'));
-    const focusable = $('button, a', $('.drawer__panel', el));
-    focusable && focusable.focus();
-  }
-  function closeDrawer(el) {
-    if (el.hidden) return;
-    el.classList.remove('is-open');
-    $$('[aria-controls="' + el.id + '"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
-    const done = () => { el.hidden = true; document.body.classList.remove('lock'); };
-    matchMedia('(prefers-reduced-motion: reduce)').matches ? done() : setTimeout(done, 300);
-    lastFocus && lastFocus.focus && lastFocus.focus();
-  }
-  function trapFocus(el, e) {
-    if (e.key !== 'Tab' || el.hidden) return;
-    const f = $$('a[href], button:not([disabled]), input', $('.drawer__panel', el)).filter(n => n.offsetParent);
-    if (!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  }
-
-  const menuDrawer = $('[data-drawer]');
-  const cartDrawer = $('[data-cart]');
-  $('[data-open-drawer]').addEventListener('click', e => openDrawer(menuDrawer, e.currentTarget));
-  $$('[data-close-drawer]').forEach(b => b.addEventListener('click', () => closeDrawer(menuDrawer)));
-  $('[data-open-cart]').addEventListener('click', e => openDrawer(cartDrawer, e.currentTarget));
-  $$('[data-close-cart]').forEach(b => b.addEventListener('click', () => closeDrawer(cartDrawer)));
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeDrawer(menuDrawer); closeDrawer(cartDrawer); closeSearch(); closeMenus(); }
-    trapFocus(menuDrawer, e); trapFocus(cartDrawer, e);
+    if (e.key === 'Escape') { closeSearch(); closeMenus(); }
   });
 
   /* ---------- Cart ---------- */
