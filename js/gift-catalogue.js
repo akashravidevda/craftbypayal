@@ -16,16 +16,13 @@ window.CBP_SAFE_RETURN=value=>{
 window.CBP_GIFT_URL=(p,prefix='')=>prefix+'collections/all.html?giftType='+encodeURIComponent(p.collection);
 window.CBP_GIFT_CARD=(p,i=0,prefix='')=>{
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const preview=p.listingState==='preview',orderable=window.CBP_CAN_ORDER(p),multiple=p.variants?.filter(v=>v.available).length>1;
+  const preview=p.listingState==='preview';
   const href=esc(window.CBP_PRODUCT_URL(p,prefix)),image=window.CBP_IMAGE(p.image,600),wish=window.CBP?.isWished(p.id)||false;
   const sizes=(p.size||[]).filter(v=>v!=='Standard');
   const sizeText=sizes.length?(sizes.length>1?sizes.length+' sizes':sizes[0]):p.productType||window.CBP_TYPE_NAME(p.collection);
   const lighting=p.collection==='miniature-frame'&&p.light?.includes('With light')?'<span class="m-light"><svg aria-hidden="true"><use href="#i-bulb"/></svg>Light option</span>':'';
-  const label=multiple?'Choose options for '+p.name:'View details for '+p.name;
-  const action=orderable&&!multiple
-    ? `<button class="add-btn" type="button" data-add="${esc(p.id)}" aria-label="Add ${esc(p.name)} to cart"><svg aria-hidden="true"><use href="#i-cart"/></svg></button>`
-    : preview||multiple?`<a class="add-btn" href="${href}" aria-label="${esc(label)}" title="${multiple?'Choose options':'View details'}"><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>`
-    : '<span class="ccard__oos">Out of stock</span>';
+  const label='View details for '+p.name;
+  const action=`<a class="add-btn" href="${href}" aria-label="${esc(label)}" title="View details"><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>`;
   return `<li class="ccard">
     <a class="ccard__media" href="${href}" tabindex="-1" aria-hidden="true">
       ${preview?'<span class="ccard__badge">Preview only</span>':p.isNew?'<span class="ccard__badge">New</span>':''}
@@ -37,6 +34,7 @@ window.CBP_GIFT_CARD=(p,i=0,prefix='')=>{
       <h3 class="ccard__name"><a href="${href}">${esc(p.name)}</a></h3>
       <p class="ccard__meta"><span>${esc(sizeText)}</span>${lighting}</p>
       <div class="ccard__foot"><p class="ccard__price">${preview?'Price pending':(p.priceFrom?'<small>From</small>':'')+window.CBP.inr(p.price)}</p>${action}</div>
+      ${!preview&&!p.inStock?'<p class="ccard__oos">Out of stock</p>':''}
     </div>
   </li>`;
 };
