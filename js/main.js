@@ -1,6 +1,7 @@
 /* Navigation must be interactive before any catalogue request completes. */
 const CBP_DRAWERS = (() => {
   const menu = document.querySelector('[data-drawer]');
+  const cart = document.querySelector('[data-cart]');
   const timers = new WeakMap();
   let active = null, lastFocus = null;
   const focusables = el => [...el.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), [tabindex="0"]')].filter(n => n.getClientRects().length);
@@ -43,6 +44,8 @@ const CBP_DRAWERS = (() => {
     const trigger = e.target.closest('[data-open-drawer]');
     if (trigger) open(menu, trigger);
     else if (e.target.closest('[data-close-drawer]')) close(menu);
+    else if (e.target.closest('[data-open-cart]')) open(cart, e.target.closest('[data-open-cart]'));
+    else if (e.target.closest('[data-close-cart]')) close(cart);
   });
   document.addEventListener('keydown', e => {
     if (!active) return;
@@ -57,7 +60,7 @@ const CBP_DRAWERS = (() => {
 })();
 
 window.CBP_READY = (async () => {
-  await window.CBP_CATALOG_READY;
+  try { await window.CBP_CATALOG_READY; } catch (err) { console.error('Catalogue unavailable, using bundled products', err); }
   'use strict';
 
   const $ = (s, el = document) => el.querySelector(s);
@@ -182,8 +185,6 @@ window.CBP_READY = (async () => {
   /* Catalogue-dependent cart rendering starts only after the catalogue resolves. */
   const { open: openDrawer, close: closeDrawer } = CBP_DRAWERS;
   const cartDrawer = $('[data-cart]');
-  $('[data-open-cart]')?.addEventListener('click', e => openDrawer(cartDrawer, e.currentTarget));
-  $$('[data-close-cart]').forEach(b => b.addEventListener('click', () => closeDrawer(cartDrawer)));
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeSearch(); closeMenus(); }
   });
