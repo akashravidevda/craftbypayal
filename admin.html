@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owner Dashboard — Craft by Payal</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FBF7F1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+  <style>
+    :root {
+      --bg:#FBF7F1; --surface:#FFFDF9; --surface-soft:#F8EEE7; --hero-bg:#FFF9F2;
+      --coral:#F26161; --coral-strong:#D63F46; --coral-ink:#CF3A42; --coral-soft:#FAD8D3;
+      --peach:#F7D2B8; --cream:#F8EBDD; --mint:#BFE6D5; --green:#2B7F68;
+      --lavender:#D7C2EA; --yellow:#F6DD86; --gold:#B9924F;
+      --ink:#21201E; --text-2:#65605C; --muted:#6F6862; --border:#E8DED4; --white:#fff;
+      --f-display:"Cormorant Garamond","DM Serif Display",Georgia,serif;
+      --f-body:"Manrope","Inter",system-ui,-apple-system,sans-serif;
+      --f-hand:"Caveat",cursive;
+      --r-sm:12px; --r-md:18px; --r-lg:28px;
+      --sh-card:0 10px 35px rgba(57,39,30,.07);
+      --sh-float:0 24px 60px rgba(57,39,30,.10);
+      --ease:cubic-bezier(.22,.61,.36,1); --t:220ms;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+    body{font:400 15px/1.6 var(--f-body);background:var(--bg);color:var(--ink);min-height:100dvh;-webkit-font-smoothing:antialiased;}
+    a{color:inherit;text-decoration:none;}
+    button{font:inherit;cursor:pointer;border:0;background:none;padding:0;color:inherit;}
+
+    /* ── Login ── */
+    #login-screen{display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:24px;background:radial-gradient(ellipse 55% 40% at 80% 20%,rgba(242,97,97,.09) 0%,transparent 70%),radial-gradient(ellipse 40% 50% at 10% 80%,rgba(185,146,79,.07) 0%,transparent 60%),var(--bg);}
+    .login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:52px 44px 44px;width:100%;max-width:420px;text-align:center;box-shadow:var(--sh-float);}
+    .login-deco{display:inline-block;width:44px;height:38px;color:var(--coral);margin-bottom:18px;}
+    .login-title{font:600 clamp(28px,3vw,36px)/1 var(--f-display);color:var(--ink);margin-bottom:4px;}
+    .login-sub{font:500 12px/1.4 var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:var(--text-2);margin-bottom:36px;}
+    .field-label{display:block;text-align:left;font:600 11.5px/1.4 var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:var(--text-2);margin-bottom:8px;}
+    .field-input{width:100%;padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--ink);font:400 15px/1.5 var(--f-body);outline:none;transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease);margin-bottom:20px;}
+    .field-input:focus{border-color:var(--coral-strong);box-shadow:0 0 0 3px rgba(214,63,70,.10);}
+    .field-input::placeholder{color:var(--muted);}
+    .btn-coral{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;padding:0 26px;border-radius:999px;background:var(--coral-strong);color:#fff;font:700 15px/1 var(--f-body);box-shadow:0 8px 20px rgba(214,63,70,.22);transition:transform var(--t) var(--ease),box-shadow var(--t) var(--ease),background var(--t) var(--ease);}
+    .btn-coral:hover{transform:translateY(-2px);background:#C7393F;box-shadow:0 12px 26px rgba(214,63,70,.30);}
+    .btn-coral:active{transform:translateY(0);}
+    #login-error{color:var(--coral-strong);font:500 13px/1.5 var(--f-body);margin-top:14px;display:none;background:var(--coral-soft);padding:10px 16px;border-radius:var(--r-sm);}
+
+    /* ── Dashboard ── */
+    #dashboard{display:none;}
+    .site-header{background:var(--surface);border-bottom:1.5px solid var(--border);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(57,39,30,.04);}
+    .header-logo{font:600 22px/1 var(--f-display);color:var(--ink);letter-spacing:-.01em;}
+    .header-logo span{color:var(--coral);}
+    .header-actions{display:flex;align-items:center;gap:12px;}
+    .btn-outline{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px solid var(--border);border-radius:999px;background:transparent;color:var(--text-2);font:600 13px/1 var(--f-body);transition:all var(--t) var(--ease);}
+    .btn-outline:hover{border-color:var(--coral-strong);color:var(--coral-strong);background:var(--coral-soft);}
+    .btn-ghost{padding:8px 12px;color:var(--muted);font:500 13px/1 var(--f-body);border-radius:999px;transition:color var(--t) var(--ease),background var(--t) var(--ease);}
+    .btn-ghost:hover{color:var(--ink);background:var(--surface-soft);}
+
+    main{padding:40px;max-width:1360px;margin:0 auto;}
+    .page-title{margin-bottom:32px;}
+    .page-title h1{font:600 clamp(28px,2vw + 14px,38px)/1 var(--f-display);color:var(--ink);margin-bottom:4px;}
+    .page-title p{font:400 14px/1.5 var(--f-body);color:var(--text-2);}
+
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:36px;}
+    .stat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);padding:22px 26px;box-shadow:var(--sh-card);transition:transform var(--t) var(--ease),box-shadow var(--t) var(--ease);}
+    .stat-card:hover{transform:translateY(-2px);box-shadow:var(--sh-float);}
+    .stat-label{font:600 11px/1.4 var(--f-body);letter-spacing:.2em;text-transform:uppercase;color:var(--text-2);margin-bottom:10px;}
+    .stat-value{font:600 clamp(30px,2.4vw,40px)/1 var(--f-display);color:var(--ink);}
+    .stat-accent{color:var(--coral);}
+
+    .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+    .filter-pill{padding:7px 16px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-2);font:600 12.5px/1 var(--f-body);transition:all var(--t) var(--ease);}
+    .filter-pill:hover{border-color:var(--coral);color:var(--coral-ink);background:var(--coral-soft);}
+    .filter-pill.active{background:var(--coral-strong);border-color:var(--coral-strong);color:#fff;box-shadow:0 4px 12px rgba(214,63,70,.2);}
+    .search-wrap{margin-left:auto;position:relative;}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+    #search-input{padding:9px 14px 9px 38px;background:var(--surface);border:1.5px solid var(--border);border-radius:999px;color:var(--ink);font:400 13.5px/1.5 var(--f-body);outline:none;width:240px;transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease);}
+    #search-input:focus{border-color:var(--coral-strong);box-shadow:0 0 0 3px rgba(214,63,70,.08);}
+    #search-input::placeholder{color:var(--muted);}
+
+    .table-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--sh-card);}
+    table{width:100%;border-collapse:collapse;}
+    thead th{padding:14px 18px;text-align:left;font:600 11px/1 var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:var(--text-2);background:var(--surface-soft);border-bottom:1.5px solid var(--border);white-space:nowrap;}
+    tbody tr{border-bottom:1px solid var(--border);transition:background var(--t) var(--ease);}
+    tbody tr:last-child{border-bottom:none;}
+    tbody tr:hover{background:var(--hero-bg);}
+    td{padding:14px 18px;font:400 14px/1.5 var(--f-body);vertical-align:middle;}
+    .order-id{font:700 13px/1 var(--f-body);color:var(--coral-ink);}
+    .customer-name{font-weight:600;}
+    .items-count{font-size:12.5px;color:var(--text-2);}
+    .total{font:700 14px/1 var(--f-body);}
+    .date-cell{color:var(--text-2);font-size:13px;white-space:nowrap;}
+
+    .badge{display:inline-block;padding:4px 11px;border-radius:999px;font:600 11.5px/1.5 var(--f-body);letter-spacing:.04em;white-space:nowrap;}
+    .b-pending{background:#FDE2A7;color:#7A5B00;}
+    .b-placed{background:var(--coral-soft);color:var(--coral-ink);}
+    .b-photos{background:var(--lavender);color:#5B3E8A;}
+    .b-preview{background:#DCEBFB;color:#1A5EA0;}
+    .b-approved{background:var(--mint);color:#1A5C46;}
+    .b-handcraft{background:var(--peach);color:#7A4010;}
+    .b-dispatch{background:#BFE6D5;color:#1A5C46;}
+    .b-delivered{background:#D6F0E3;color:#0F4030;}
+    .b-cancelled{background:#E8DED4;color:var(--muted);}
+
+    .action-cell{display:flex;align-items:center;gap:8px;}
+    .status-select{appearance:none;-webkit-appearance:none;padding:8px 32px 8px 13px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24'%3E%3Cpath fill='%236F6862' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 10px center,var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--ink);font:500 13px/1.5 var(--f-body);cursor:pointer;outline:none;min-width:168px;transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease);}
+    .status-select:focus{border-color:var(--coral-strong);box-shadow:0 0 0 3px rgba(214,63,70,.08);}
+    .save-btn{display:inline-flex;align-items:center;padding:8px 16px;border-radius:999px;background:var(--coral-strong);color:#fff;font:600 13px/1 var(--f-body);box-shadow:0 4px 10px rgba(214,63,70,.20);white-space:nowrap;transition:transform var(--t) var(--ease),box-shadow var(--t) var(--ease),background var(--t) var(--ease),opacity var(--t) var(--ease);}
+    .save-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 18px rgba(214,63,70,.26);background:#C7393F;}
+    .save-btn:active:not(:disabled){transform:translateY(0);}
+    .save-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+    .save-btn.saving{background:var(--muted);box-shadow:none;}
+    .save-btn.saved{background:var(--green);box-shadow:0 4px 10px rgba(43,127,104,.22);}
+
+    #loading-state{padding:70px 24px;text-align:center;color:var(--text-2);}
+    .loading-deco{width:38px;height:38px;border:2.5px solid var(--border);border-top-color:var(--coral);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .empty-state{padding:70px 24px;text-align:center;color:var(--text-2);display:none;}
+    .empty-state svg{color:var(--border);margin-bottom:14px;}
+    .empty-state p{font:500 15px/1.5 var(--f-body);color:var(--text-2);}
+
+    #toast{position:fixed;bottom:28px;right:28px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);padding:13px 20px;font:500 14px/1.4 var(--f-body);color:var(--ink);box-shadow:var(--sh-float);transform:translateY(80px);opacity:0;transition:transform .35s var(--ease),opacity .35s var(--ease);z-index:9999;max-width:340px;}
+    #toast.show{transform:translateY(0);opacity:1;}
+    #toast.ok{border-color:var(--green);}
+    #toast.err{border-color:var(--coral-strong);}
+
+    @media(max-width:900px){main{padding:20px;}.site-header{padding:0 20px;}#search-input{width:180px;}.action-cell{flex-wrap:wrap;}.status-select{min-width:130px;}td,thead th{padding:12px 12px;}}
+    @media(max-width:600px){.toolbar{gap:6px;}#search-input{width:100%;}.search-wrap{margin-left:0;width:100%;}.login-card{padding:36px 24px;}table{font-size:13px;}}
+  </style>
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <svg class="login-deco" viewBox="0 0 40 36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 32C9 25 3.5 18.5 4.2 11.8 5 5 13.2 2.8 18 9.3c.8 1 1.5 2.2 2 3.4.6-1.3 1.4-2.6 2.4-3.6 5.4-6 13.4-3 13.3 3.6-.1 6.3-6.6 12.4-15.8 18.6"/>
+    </svg>
+    <a class="login-logo" href="index.html"><img src="assets/logo.svg" alt="Craft by Payal home" width="180" height="74"></a>
+    <h1 class="login-title">Welcome to your studio</h1>
+    <p class="login-sub">A little care behind every order.</p>
+    <form id="login-form" onsubmit="return handleLogin(event)">
+      <label class="field-label" for="pw-input">Password</label>
+      <input type="password" id="pw-input" class="field-input" placeholder="Enter your owner password" autocomplete="current-password" />
+      <button type="submit" class="btn-coral">
+        Sign in
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+    <a class="back-store" href="index.html">&larr; Back to the shop</a>
+    <div id="login-error" role="alert">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<a class="skip-link" href="#orders-main">Skip to orders</a>
+<div id="dashboard">
+  <div class="studio-band">Made with love. Managed with care. <span aria-hidden="true">♡</span></div>
+  <header class="site-header">
+    <a class="header-logo" href="index.html" aria-label="Craft by Payal home"><img src="assets/logo.svg" alt="Craft by Payal" width="160" height="66"></a>
+    <span class="studio-label">The owner’s studio</span>
+    <div class="header-actions">
+      <a class="btn-ghost shop-link" href="index.html">Visit shop &nearr;</a>
+      <button id="refresh-btn" class="btn-outline" onclick="loadOrders()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Refresh
+      </button>
+      <button class="btn-ghost" onclick="logout()">Sign out</button>
+    </div>
+  </header>
+  <nav class="studio-tabs" aria-label="Studio sections"><button type="button" class="active" data-section="orders" aria-pressed="true">Order book</button><button type="button" data-section="products" aria-pressed="false">Products</button></nav>
+  <main id="orders-main">
+    <div id="orders-section">
+    <section class="studio-hero" aria-labelledby="orders-heading">
+      <div class="page-title">
+        <p class="studio-eyebrow">Craft by Payal · Owner dashboard</p>
+        <h1 id="orders-heading">Little gifts.<br><em>Beautifully organised.</em></h1>
+        <p>From the first photo to the final parcel, give every order a little care.</p>
+      </div>
+      <div class="studio-note" aria-hidden="true"><span>made by hand,</span><span>managed with heart</span><svg viewBox="0 0 40 36" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 32C9 25 3.5 18.5 4.2 11.8 5 5 13.2 2.8 18 9.3l2 3.4 2.4-3.6c5.4-6 13.4-3 13.3 3.6-.1 6.3-6.6 12.4-15.8 18.6"/></svg></div>
+    </section>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-value" id="stat-total">&#8212;</div></div>
+      <div class="stat-card"><div class="stat-label">Open Orders</div><div class="stat-value stat-accent" id="stat-open">&#8212;</div></div>
+      <div class="stat-card"><div class="stat-label">Dispatched</div><div class="stat-value" id="stat-dispatched">&#8212;</div></div>
+      <div class="stat-card"><div class="stat-label">Delivered</div><div class="stat-value" id="stat-delivered">&#8212;</div></div>
+    </div>
+    <div class="orders-heading"><div><p class="studio-eyebrow">Your order book</p><h2>Every gift starts here</h2></div><p>Track, prepare &amp; send with love.</p></div>
+    <div class="toolbar" role="group" aria-label="Filter orders">
+      <button class="filter-pill active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-pill" onclick="setFilter('open',this)">Open</button>
+      <button class="filter-pill" onclick="setFilter('Dispatched',this)">Dispatched</button>
+      <button class="filter-pill" onclick="setFilter('Delivered',this)">Delivered</button>
+      <button class="filter-pill" onclick="setFilter('Cancelled',this)">Cancelled</button>
+      <div class="search-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5" stroke-linecap="round"/></svg>
+        <input id="search-input" aria-label="Search by order ID or customer name" type="search" placeholder="Order ID or name&#8230;" oninput="renderTable()" />
+      </div>
+    </div>
+    <div class="table-card" role="region" aria-label="Customer orders" tabindex="0">
+      <div id="loading-state"><div class="loading-deco"></div><p>Loading orders&#8230;</p></div>
+      <div id="empty-state" class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+        <h3>No orders found</h3><p>New orders will appear here. Try another filter or customer name.</p>
+      </div>
+      <table id="orders-table" style="display:none">
+        <thead><tr>
+          <th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Placed</th><th>Status</th><th>Update Status</th>
+        </tr></thead>
+        <tbody id="orders-body"></tbody>
+      </table>
+    </div>
+    </div>
+    <section id="products-section" hidden aria-labelledby="products-title">
+      <div class="product-heading"><div><p class="studio-eyebrow">Your handmade collection</p><h1 id="products-title">The gift shelf</h1><p>Add a new creation or give an existing one a little care.</p></div><button type="button" class="save-btn" id="new-product">+ Add product</button></div>
+      <p id="product-feedback" role="status" aria-live="polite"></p>
+      <div class="product-tools"><label for="product-search">Find a product</label><input id="product-search" type="search" placeholder="Search name or product ID"><button type="button" class="btn-outline" id="reload-products">Reload products</button><span id="product-count"></span></div>
+      <div id="product-list" class="owner-products"></div>
+      <dialog id="product-editor" aria-labelledby="editor-title">
+        <form id="product-form">
+          <div class="editor-head"><div><p class="studio-eyebrow">Made by you</p><h2 id="editor-title">Add a product</h2></div><button type="button" id="close-editor" class="btn-ghost" aria-label="Close product editor">Close &times;</button></div>
+          <div class="editor-grid"><div>
+            <label class="editor-field">Product name<input name="name" required maxlength="150"></label>
+            <label class="editor-field">Product ID<input name="id" required pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="100" placeholder="my-handmade-frame"><small>Unique lowercase words separated by hyphens. Fixed after saving.</small></label>
+            <label class="editor-field">Description<textarea name="description" rows="4" maxlength="5000" required></textarea></label>
+            <label class="editor-field">Photo links<textarea name="images" rows="4" required placeholder="https://… (one link per line)"></textarea><small>One to eight public HTTPS image links. The first photo is the cover.</small></label>
+            <label class="editor-field">Occasions<input name="occasion" placeholder="Birthday, Anniversary"><small>Separate with commas.</small></label>
+            <label class="editor-field">Themes<input name="theme" placeholder="Family, Couple"></label>
+          </div><aside class="editor-preview"><p class="studio-eyebrow">Cover preview</p><img id="product-preview" alt="Product cover preview" hidden><p id="preview-placeholder">Your cover photo will appear here.</p><h3 id="preview-name">Your next little creation</h3><p id="preview-price"></p><label class="editor-check"><input type="checkbox" name="visible" checked> Show in the shop</label><label class="editor-check"><input type="checkbox" name="featured"> Feature on the home page</label><small>Hidden products stay in your dashboard. Stock is set for each variant below.</small></aside></div>
+          <fieldset class="variant-fieldset"><legend>Sizes, lighting &amp; prices</legend><p>Add one row for each combination. Use “Standard” if there are no options.</p><div id="variant-rows"></div><button type="button" class="btn-outline" id="add-variant">+ Add variant</button></fieldset>
+          <p id="editor-error" role="alert"></p><div class="editor-foot"><button type="button" class="btn-outline" id="cancel-product">Cancel</button><button type="submit" class="save-btn" id="save-product">Save product</button></div>
+        </form>
+      </dialog>
+    </section>
+    <footer class="studio-footer"><span>Craft by Payal</span> Little things. Lasting memories.</footer>
+  </main>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/config.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/products.js"></script>
+<script>
+var API=(window.CBP_CONFIG||{}).ORDER_API||'';
+var OWNER_PW=sessionStorage.getItem('cbp_owner_password')||'';
+var allOrders=[],allStatuses=[],currentFilter='all';
+
+async function handleLogin(e){
+  e.preventDefault();
+  var pw=document.getElementById('pw-input').value;
+  var error=document.getElementById('login-error'),btn=e.target.querySelector('button');
+  if(!API){error.textContent='Connect the order service before signing in.';error.style.display='block';return false;}
+  btn.disabled=true;btn.textContent='Signing in…';
+  try{
+    var r=await fetch(API+'?action=listOrders&pw='+encodeURIComponent(pw),{signal:AbortSignal.timeout(15000)}),d=await r.json();
+    if(!d.ok){
+      if(d.error==='Unauthorized')throw Error('Incorrect password. Please try again.');
+      throw Error(d.error||'Could not connect to backend.');
+    }
+    OWNER_PW=pw;sessionStorage.setItem('cbp_owner_password',pw);sessionStorage.setItem('cbp_admin','1');showDashboard();
+  }catch(x){error.textContent=x.message||'Could not sign in. Check your connection and try again.';error.style.display='block';}
+  finally{btn.disabled=false;btn.textContent='Sign in';}
+  return false;
+}
+function showDashboard(){document.getElementById('login-screen').style.display='none';document.getElementById('dashboard').style.display='block';loadOrders();}
+function logout(){sessionStorage.removeItem('cbp_admin');sessionStorage.removeItem('cbp_owner_password');location.reload();}
+
+function loadOrders(){
+  if(!API){document.getElementById('loading-state').innerHTML='<p>Connect your order service to see customer orders here.</p>';showToast('Order service is not configured','err');return;}
+  document.getElementById('loading-state').style.display='block';
+  document.getElementById('orders-table').style.display='none';
+  document.getElementById('empty-state').style.display='none';
+  fetch(API+'?action=listOrders&pw='+encodeURIComponent(OWNER_PW))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      document.getElementById('loading-state').style.display='none';
+      if(!d.ok){showToast(d.error||'Error','err');return;}
+      allOrders=d.orders||[];allStatuses=d.statuses||[];
+      updateStats();renderTable();
+    })
+    .catch(function(){document.getElementById('loading-state').style.display='none';showToast('Could not reach API','err');});
+}
+
+function updateStats(){
+  var open=allOrders.filter(function(o){return o.status!=='Delivered'&&o.status!=='Cancelled';}).length;
+  document.getElementById('stat-total').textContent=allOrders.length;
+  document.getElementById('stat-open').textContent=open;
+  document.getElementById('stat-dispatched').textContent=allOrders.filter(function(o){return o.status==='Dispatched';}).length;
+  document.getElementById('stat-delivered').textContent=allOrders.filter(function(o){return o.status==='Delivered';}).length;
+}
+
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-pill').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');renderTable();
+}
+
+function renderTable(){
+  var q=(document.getElementById('search-input').value||'').toLowerCase();
+  var rows=allOrders.filter(function(o){
+    if(currentFilter==='open'&&(o.status==='Delivered'||o.status==='Cancelled'))return false;
+    if(currentFilter!=='all'&&currentFilter!=='open'&&o.status!==currentFilter)return false;
+    if(q&&o.id.toLowerCase().indexOf(q)<0&&o.name.toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+  var tbody=document.getElementById('orders-body');
+  tbody.innerHTML='';
+  if(!rows.length){
+    document.getElementById('orders-table').style.display='none';
+    document.getElementById('empty-state').style.display='block';return;
+  }
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('orders-table').style.display='table';
+  rows.forEach(function(o){
+    var sid='sel-'+o.id.replace(/[^a-z0-9]/gi,'');
+    var bid='btn-'+o.id.replace(/[^a-z0-9]/gi,'');
+    var opts=allStatuses.map(function(s){
+      return '<option value="'+esc(s)+'"'+(s===o.status?' selected':'')+'>'+esc(s)+'</option>';
+    }).join('');
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="order-id">'+esc(o.id)+'</span></td>'+
+      '<td><span class="customer-name">'+esc(o.name)+'</span></td>'+
+      '<td><span class="items-count">'+o.items+' item'+(o.items!==1?'s':'')+'</span></td>'+
+      '<td><span class="total">&#8377;'+Number(o.total||0).toLocaleString('en-IN')+'</span></td>'+
+      '<td><span class="date-cell">'+esc(o.placed)+'</span></td>'+
+      '<td>'+badge(o.status)+'</td>'+
+      '<td><div class="action-cell">'+
+        '<select onchange="this.nextElementSibling.disabled=this.value===this.dataset.original" data-original="'+esc(o.status)+'" aria-label="Status for '+esc(o.id)+'" id="'+sid+'" class="status-select">'+opts+'</select>'+
+        '<button disabled id="'+bid+'" class="save-btn" onclick="saveStatus(\''+esc(o.id)+'\',\''+sid+'\',\''+bid+'\')">Save</button>'+
+      '</div></td>';
+    ['Order ID','Customer','Items','Total','Placed','Status','Update status'].forEach(function(label,i){tr.children[i].setAttribute('data-label',label);});
+    tbody.appendChild(tr);
+  });
+}
+
+var BADGE={
+  'Pending payment':'b-pending','Placed':'b-placed','Photos received':'b-photos',
+  'Preview sent':'b-preview','Approved':'b-approved','Handcrafting':'b-handcraft',
+  'Dispatched':'b-dispatch','Delivered':'b-delivered','Cancelled':'b-cancelled'
+};
+function badge(s){return'<span class="badge '+(BADGE[s]||'')+'">'+esc(s)+'</span>';}
+
+function saveStatus(id,sid,bid){
+  var sel=document.getElementById(sid),btn=document.getElementById(bid);
+  var nextStatus=sel.value;
+  if(nextStatus===sel.dataset.original)return;
+  sel.disabled=true;btn.disabled=true;btn.textContent='Saving…';btn.className='save-btn saving';
+  fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({action:'updateStatus',pw:OWNER_PW,id:id,status:nextStatus})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.ok){
+      sel.dataset.original=nextStatus;
+      btn.textContent='Saved';btn.className='save-btn saved';
+      var o=allOrders.find(function(x){return x.id===id;});
+      if(o){o.status=nextStatus;updateStats();}
+      showToast('Status updated for '+id,'ok');
+      setTimeout(function(){renderTable();},2000);
+    }else{sel.disabled=false;btn.disabled=false;btn.textContent='Save';btn.className='save-btn';showToast(d.error||'Update failed','err');}
+  })
+  .catch(function(){sel.disabled=false;btn.disabled=false;btn.textContent='Save';btn.className='save-btn';showToast('Network error','err');});
+}
+
+var toastTimer;
+function showToast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.className='show '+type;
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.className='';},3600);
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+if(sessionStorage.getItem('cbp_admin')==='1'&&OWNER_PW)showDashboard();
+</script>
+<script src="js/admin-products.js"></script>
+</body>
+</html>

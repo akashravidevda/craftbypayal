@@ -1,0 +1,19 @@
+# Response headers for Netlify and Cloudflare Pages (Vercel uses vercel.json).
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# HTML: always revalidate so content updates show immediately
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Static assets: cache for a day (file names aren't fingerprinted)
+/css/*
+  Cache-Control: public, max-age=86400
+/js/*
+  Cache-Control: public, max-age=86400
+/assets/*
+  Cache-Control: public, max-age=604800
